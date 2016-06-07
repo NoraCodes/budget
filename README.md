@@ -24,11 +24,10 @@ The tool can be called from the command line by typing `budget <command>`.
 
 + `budget setup` will ask you some questions to set up budget for the first time, _wiping out your current configuration_.
 + `budget status` (or just `budget`) will tell you how long until your next payday, next expense, and how much you have left.
-+ `budget details` will list all your expenses, both recurring and one-time, so far this month.
-+ `budget spend <amount> [name]` will add a one-time expense, reducing the amount of money you have left.
-+ `budget tip <amount> [name]` will add a one-time income, increasing the amount of money you have left.
++ `budget spend <amount>` will add a one-time expense, reducing the amount of money you have left.
++ `budget tip <amount>` will add a one-time income, increasing the amount of money you have left.
 + `budget expense <amount> <name> <day of the month>` will add a recurring expense.
 + `budget income <amount> <name> <day of the month>` will add a recurring income, _in addition_ to your payday income.
 + `budget remove <id>` will stop a recurring income or expense.
-+ `budget list` will list all the recurring incomes and expenses you've entered.
++ `budget list` will list all the recurring incomes and expenses you've set up.
 
