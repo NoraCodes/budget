@@ -23,14 +23,14 @@ pub fn args_to_command(args: (Option<&str>, Option<&str>, Option<&str>)) ->
                        Result<Command, String> 
     {
         // These three Strings will be the destinations for unwrapped version of the input
-        let mut arg0: String;
-        let mut arg1: String;
-        let mut arg2: String;
+        let arg0: String;
+        let arg1: String;
+        let arg2: String;
 
         // These variables will be used to hold arguments, if we need them
-        let mut famount: f64;
-        let mut amount: i64;
-        let mut day: i8;
+        let famount: f64;
+        let amount: i64;
+        let day: i8;
         
         // Match on the first argument, the command
         match args.0 {
