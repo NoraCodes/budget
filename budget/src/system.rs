@@ -8,7 +8,7 @@ pub fn get_config_file_path(file_name: &str) -> Result<String, String> {
     let mut path: PathBuf;
     match get_app_dir(AppDirType::UserConfig) {
         Ok(config_dir_path) => path = config_dir_path,
-        Err(r) => return Err(String::from("Failed to get user config directory!")),
+        Err(_) => return Err(String::from("Failed to get user config directory!")),
     }
     
     path.push(file_name);
