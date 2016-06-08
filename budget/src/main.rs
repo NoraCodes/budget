@@ -1,5 +1,6 @@
 extern crate time;
 extern crate rustc_serialize;
+extern crate app_dirs;
 
 use rustc_serialize::json;
 
@@ -45,5 +46,7 @@ fn main() {
         Ok(command) => println!("{:?}", command),
         Err(r) => println!("{}", r),
     };
+
+    
 }
 
