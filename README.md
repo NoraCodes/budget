@@ -22,7 +22,7 @@ money on a longer than monthly basis.
 ## Features
 The tool can be called from the command line by typing `budget <command>`.
 
-+ `budget setup` will ask you some questions to set up budget for the first time, _wiping out your current configuration_.
++ `budget setup <amount> <day>` will set up your budget with your payday on day <day> with amount <amount>
 + `budget status` (or just `budget`) will tell you how long until your next payday, next expense, and how much you have left.
 + `budget spend <amount>` will add a one-time expense, reducing the amount of money you have left.
 + `budget tip <amount>` will add a one-time income, increasing the amount of money you have left.

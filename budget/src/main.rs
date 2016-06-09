@@ -15,10 +15,38 @@ use commands::*;
 use system::*;
 use data::*;
 
+fn do_setup(config_file_path: &str, payday_amount: &i64, payday_day: &u8) 
+{
+    // We're setting up a new config file
+    // First, create the payday transaction
+    let payday = Transaction {
+        amount: payday_amount.clone(),
+        recur_day: Some(payday_day.clone()),
+        complete: false,
+    };
+    // Create the new account
+    let empty_acc = Account {
+        payday: Some(payday),
+        transactions: Vec::<Transaction>::new(),
+        balance: 0,
+    };
+    match write_account(&config_file_path, &empty_acc){
+        Ok(_) => return,
+        // TODO: Replace with return type
+        Err(r) => panic!("{}", r)
+    };
+}
+
 
 fn main() {
     // Allow changing this with a command line option
     let default_config_name = "budget.cfg";
+
+    // Get the config file path, or say why not
+    let config_file_path = match get_config_file_path(&default_config_name) {
+        Ok(s) => s,
+        Err(r) => panic!("{}", r)
+    };
 
     // Collect arguments into a vector
     // We assume no more than 3 args + program name
@@ -50,19 +78,20 @@ fn main() {
                               Some(arguments[3].as_ref()))),
     };
 
+   
     // TODO: Replace with a match for the actual operations
-    match parsed {
-        Ok(command) => println!("{:?}", command),
-        Err(r) => println!("{}", r),
-    };
-    
-    // Get the config file path, or say why not
-    let config_file_path = match get_config_file_path(&default_config_name) {
-        Ok(s) => s,
+    let command = match parsed {
+        Ok(c) => c,
         Err(r) => panic!("{}", r)
     };
-    println!("{}", config_file_path);
-
+    
+    match command {
+        Command::Setup(amount, day) => do_setup(&config_file_path,
+                                                &amount,
+                                                &day),
+        _ => println!("{:?}", command)
+    };
+    
     // Open read the config file
     match read_account(&config_file_path) {
         Ok(account) => println!("{:?}", account),

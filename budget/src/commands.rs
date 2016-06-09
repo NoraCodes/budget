@@ -1,16 +1,16 @@
 //! Commands for `budget`
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum Command {
     /// Setup is for generating the configuration
-    Setup,
+    Setup(i64, u8),
     /// Status, the default command if a working config exists, simply reports the status of the
     /// budget account to the user
     Status,
     /// OneTime creates a one-time transaction
     OneTime(i64),
     /// Recurring adds a recurring transaction
-    Recurring(i64, i8),
+    Recurring(i64, u8),
     /// Remove destroys an exsisting recurring transaction, by ID
     Remove(i64),
     /// List lists all existing recurring transactions, including ID
@@ -30,7 +30,7 @@ pub fn args_to_command(args: (Option<&str>, Option<&str>, Option<&str>)) ->
         // These variables will be used to hold arguments, if we need them
         let famount: f64;
         let amount: i64;
-        let day: i8;
+        let day: u8;
         
         // Match on the first argument, the command
         match args.0 {
@@ -44,7 +44,6 @@ pub fn args_to_command(args: (Option<&str>, Option<&str>, Option<&str>)) ->
         // If it matches none of these, we can proceed to the next argument
         match arg0.as_ref() {
             "status" => return Ok(Command::Status),
-            "setup" => return Ok(Command::Setup),
             "list" => return Ok(Command::List),
             _ => ()
         }
@@ -101,7 +100,7 @@ pub fn args_to_command(args: (Option<&str>, Option<&str>, Option<&str>)) ->
         }
 
         // Parse the third argument into an i8
-        match arg2.parse::<i8>() {
+        match arg2.parse::<u8>() {
             Ok(n) => day = n,
             Err(r) => return Err(String::from("Argument day was not valid: ") 
                                  + r.to_string().as_ref()),
@@ -111,6 +110,7 @@ pub fn args_to_command(args: (Option<&str>, Option<&str>, Option<&str>)) ->
         match arg0.as_ref() {
             "income" => return Ok(Command::Recurring(amount, day)),
             "expense" => return Ok(Command::Recurring(-amount, day)),
+            "setup" => return Ok(Command::Setup(amount, day)),
             _ => return Err(String::from("Unknown command: ") + arg0.as_ref()),
         }
 
