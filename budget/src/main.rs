@@ -55,9 +55,8 @@ fn main() {
     };
     
     // Get the config file path, or say why not
-    let mut config_file_path = String::new();
-    match get_config_file_path(&default_config_name) {
-        Ok(s) => config_file_path = s,
+    let config_file_path = match get_config_file_path(&default_config_name) {
+        Ok(s) => s,
         Err(r) => panic!("{}", r)
     };
     println!("{}", config_file_path);
