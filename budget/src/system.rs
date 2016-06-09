@@ -1,12 +1,9 @@
 //! System functions for `budget`
-use account::Account;
 use app_dirs::*;
 use std::path::PathBuf;
 
 use std::io::prelude::*;
 use std::fs::File;
-
-use rustc_serialize::json;
 
 /// Acquire the path to the config file
 pub fn get_config_file_path(file_name: &str) -> Result<String, String> {
@@ -21,27 +18,40 @@ pub fn get_config_file_path(file_name: &str) -> Result<String, String> {
     return Ok(path.to_string_lossy().into_owned());
 }
 
-/// Read in a json file to an Account
-pub fn read_account(file_path: &str) -> Result<Account, String>{
-
+pub fn read_file(file_path: &str) -> Result<String, String>{
     // Try to open the file
     let mut f = match File::open(file_path) {
         Ok(f_val) => f_val,
-        Err(_) => return Err(String::from("Failed to open config file!"))
+        Err(r) => return Err(String::from("Failed to open config file ") 
+                             + file_path
+                             + ": " + r.to_string().as_ref())
     };
 
     // Try to read the file into a buffer
     let mut s = String::new();
     match f.read_to_string(&mut s) {
-        Ok(_) => (),
-        Err(_) => return Err(String::from("Failed to read config file!"))
+        Ok(_) => return Ok(s),
+        Err(r) => return Err(String::from("Failed to read config file ") 
+                             + file_path
+                             + ": " + r.to_string().as_ref())
     };
-    
-    // Try to parse the file into an Account
-    match json::decode(&s) {
-        Ok(decoded) => return Ok(decoded),
-        Err(_) => return Err(String::from("Failed to parse config file!"))
+}
+
+
+pub fn write_file(file_path: &str, data: &str) -> Result<(), String>{
+    // Try to open the file
+    let mut f = match File::create(file_path) {
+        Ok(f_val) => f_val,
+        Err(r) => return Err(String::from("Failed to open config file ") 
+                             + file_path
+                             + ": " + r.to_string().as_ref())
     };
 
-    
+    // Try to read the file into a buffer
+    match f.write_all(data.as_bytes()) {
+        Ok(_) => return Ok(()),
+        Err(r) => return Err(String::from("Failed to write to config file ") 
+                             + file_path
+                             + ": " + r.to_string().as_ref())
+    };
 }
