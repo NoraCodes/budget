@@ -17,6 +17,22 @@ pub enum Command {
     List,
 }
 
+/// Check if a command is valid
+fn is_command_valid(command: &str) -> bool {
+    match command {
+        "setup" => true,
+        "status" => true,
+        "spend" => true,
+        "tip" => true,
+        "expense" => true,
+        "income" => true,
+        "remove" => true,
+        "list" => true,
+        _ => false
+    }
+}
+
+
 /// Given a tuple of one, two, or three arguments, decide which Command is being asked for and
 /// parse its arguments
 pub fn args_to_command(args: (Option<&str>, Option<&str>, Option<&str>)) -> 
@@ -39,6 +55,12 @@ pub fn args_to_command(args: (Option<&str>, Option<&str>, Option<&str>)) ->
             // Otherwise, we have a command and need to try to parse it
             Some(string) => arg0 = String::from(string.as_ref()).to_lowercase(),
         }
+
+        // Make sure the command is valid; if not, return an error.
+        match is_command_valid(&arg0) {
+            true => (),
+            false => return Err(String::from("Invalid command ") + &arg0)
+        };
 
         // Match arg1 against all the commands that take no arguments
         // If it matches none of these, we can proceed to the next argument
