@@ -2,7 +2,7 @@ extern crate time;
 extern crate rustc_serialize;
 extern crate app_dirs;
 
-use rustc_serialize::json;
+use std::env::args;
 
 mod transaction;
 mod account;
@@ -11,19 +11,25 @@ mod commands;
 
 use account::*;
 use commands::*;
+use system::*;
+
 
 fn main() {
-    use std::env;
+    // Allow changing this with a command line option
+    let default_config_name = "budget.cfg";
+
     // Collect arguments into a vector
     // We assume no more than 3 args + program name
     // (The consequences are not dire if we are wrong)
     let mut arguments = Vec::with_capacity(4);
-    for argument in env::args() {
+    for argument in args() {
         arguments.push(argument);
     }
     
     // Count how many args we have
     let n_args = arguments.len();
+
+    // Parse our arguments into the Command enum symbolic representation
     // FIXME: This is inelegant.
     let parsed = match n_args {
         1 => args_to_command((None, 
@@ -42,11 +48,24 @@ fn main() {
                               Some(arguments[3].as_ref()))),
     };
 
+    // TODO: Replace with a match for the actual operations
     match parsed {
         Ok(command) => println!("{:?}", command),
         Err(r) => println!("{}", r),
     };
-
     
+    // Get the config file path, or say why not
+    let mut config_file_path = String::new();
+    match get_config_file_path(&default_config_name) {
+        Ok(s) => config_file_path = s,
+        Err(r) => panic!("{}", r)
+    };
+    println!("{}", config_file_path);
+
+    // Open read the config file
+    match read_account(&config_file_path) {
+        Ok(account) => println!("{:?}", account),
+        Err(r) => panic!("{}", r)
+    };
 }
 

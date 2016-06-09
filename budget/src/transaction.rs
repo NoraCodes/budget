@@ -1,5 +1,4 @@
 extern crate rustc_serialize;
-use rustc_serialize::json;
 
 /// This struct represents a transaction, either recurring or one-time, which can be applied to an
 /// account, either adding to or subtracting from the balance of that account
