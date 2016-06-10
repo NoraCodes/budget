@@ -16,7 +16,16 @@ use system::*;
 use data::*;
 use exec::*;
 
-fn main() {
+/// Using a "fake main" allows us to return from main() like in C
+fn main() 
+{
+    use std::process::exit;
+    let rc = fake_main();
+    exit(rc);
+}
+
+fn fake_main() -> i32 
+{
     // Allow changing this with a command line option
     let default_config_name = "budget.cfg";
 
@@ -60,7 +69,9 @@ fn main() {
     // TODO: Replace with a match for the actual operations
     let command = match parsed {
         Ok(c) => c,
-        Err(r) => panic!("{}", r)
+        Err(r) => { println!("{}", r);
+                    return 1;
+        }
     };
     
     // Setup is a special beast, so we need to see if we're dealing with it.
@@ -74,10 +85,10 @@ fn main() {
     };
 
     match cmd_result {
-        Ok(()) => (),
+        Ok(()) => return 0,
         Err(s) => println!("{}", s)
     };
     // At this point, we have returned unless there's an error
-    // return 1;
+    return 1;
 }
 
