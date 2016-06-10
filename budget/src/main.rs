@@ -13,7 +13,6 @@ mod exec;
 
 use commands::*;
 use system::*;
-use data::*;
 use exec::*;
 
 /// Using a "fake main" allows us to return from main() like in C
@@ -81,7 +80,7 @@ fn fake_main() -> i32
         Command::Setup(amount, day) => do_setup(&config_file_path,
                                                 &amount,
                                                 &day),
-        _ => do_other(&config_file_path, &command),
+        _ => do_other(&config_file_path, command),
     };
 
     match cmd_result {
