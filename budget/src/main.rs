@@ -9,34 +9,12 @@ mod account;
 mod system;
 mod commands;
 mod data;
+mod exec;
 
-use account::*;
 use commands::*;
 use system::*;
 use data::*;
-
-fn do_setup(config_file_path: &str, payday_amount: &i64, payday_day: &u8) 
-{
-    // We're setting up a new config file
-    // First, create the payday transaction
-    let payday = Transaction {
-        amount: payday_amount.clone(),
-        recur_day: Some(payday_day.clone()),
-        complete: false,
-    };
-    // Create the new account
-    let empty_acc = Account {
-        payday: Some(payday),
-        transactions: Vec::<Transaction>::new(),
-        balance: 0,
-    };
-    match write_account(&config_file_path, &empty_acc){
-        Ok(_) => return,
-        // TODO: Replace with return type
-        Err(r) => panic!("{}", r)
-    };
-}
-
+use exec::*;
 
 fn main() {
     // Allow changing this with a command line option
@@ -85,17 +63,21 @@ fn main() {
         Err(r) => panic!("{}", r)
     };
     
-    match command {
+    // Setup is a special beast, so we need to see if we're dealing with it.
+    // If so, we can run setup and be done. If not, we need to match on the rest of the possible
+    // options, which is done in exec.rs
+    let cmd_result = match command {
         Command::Setup(amount, day) => do_setup(&config_file_path,
                                                 &amount,
                                                 &day),
-        _ => println!("{:?}", command)
+        _ => do_other(&config_file_path, &command),
     };
-    
-    // Open read the config file
-    match read_account(&config_file_path) {
-        Ok(account) => println!("{:?}", account),
-        Err(r) => panic!("{}", r)
+
+    match cmd_result {
+        Ok(()) => (),
+        Err(s) => println!("{}", s)
     };
+    // At this point, we have returned unless there's an error
+    // return 1;
 }
 
