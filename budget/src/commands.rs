@@ -1,4 +1,4 @@
-//! Commands for `budget`
+//! Commands and command parsing for `budget`
 
 #[derive(Debug, PartialEq)]
 pub enum Command {
