@@ -15,7 +15,7 @@ pub fn do_setup(config_file_path: &str, payday_amount: i64, payday_day: u8)
     };
     // Create the new account
     let empty_acc = Account {
-        payday: Some(payday),
+        payday: payday,
         transactions: Vec::<Transaction>::new(),
         balance: 0,
     };

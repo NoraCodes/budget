@@ -5,7 +5,7 @@ pub use transaction::Transaction;
 pub struct Account {
     /// The root recurring payment for this account.
     /// This is the date on which the account resets.
-    pub payday: Option<Transaction>,
+    pub payday: Transaction,
     /// These are the transactions for the account, historical
     /// and scheduled. Because scheduling is based on day of the month,
     /// you cannot schedule one-time transactions.
