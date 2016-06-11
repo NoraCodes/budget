@@ -8,7 +8,4 @@ pub struct Transaction {
     pub amount: i64,
     /// The day of the month on which this transaction occurs
     pub recur_day: Option<u8>,
-    /// Whether or not this transaction has been completed this month
-    /// The payday transaction
-    pub complete: bool,
 }

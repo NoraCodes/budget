@@ -11,14 +11,9 @@ pub fn do_setup(config_file_path: &str, payday_amount: i64, payday_day: u8)
     let payday = Transaction {
         amount: payday_amount,
         recur_day: Some(payday_day),
-        complete: false,
     };
     // Create the new account
-    let empty_acc = Account {
-        payday: payday,
-        transactions: Vec::<Transaction>::new(),
-        balance: 0,
-    };
+    let empty_acc = Account::new(payday, 0);
     match write_account(&config_file_path, &empty_acc){
         Ok(_) => return Ok(()),
         Err(s) => return Err(s),
@@ -43,17 +38,32 @@ pub fn do_other(config_file_path: &str, command: Command)
     // Once we have the guarantee of the command (which this function requires to be called) and of
     // the data from the config file, we can simply dispatch to the other do_ functions, since
     // their return type matches that of this function
-    // TODO: Move to a system wherein all these subserviant do_- commands return an Account which
-    // we Update() and then write to a file. This will potentially allow us to add do_setup to the set of
-    // subserviant do_ functions and allow main to depend only on this, which we can then rename
-    // simply exec()
-    match command {
-        Command::Status => return do_status(&account),
-        Command::OneTime(amount) => return do_one_time(&mut account, 
+    let command_output = match command {
+        Command::Status => do_status(&account),
+        Command::OneTime(amount) => do_one_time(&mut account, 
                                                        amount),
         _ => return Err(String::from("Not implemented: ") 
                         + &format!("{:?}", command)),
     };
+
+    // If the command returned an error, we have a problem
+    match command_output {
+        Ok(()) => (),
+        Err(s) => return Err(s)
+    };
+
+    // Update the account before saving
+    match account.update() {
+        Ok(_) => (),
+        Err(s) => return Err(s),
+    };
+
+    // Write out the account to the config file.
+    match write_account(&config_file_path, &account) {
+        Ok(_) => (),
+        Err(s) => return Err(s),
+    };
+    return Ok(());
 }
 
 fn do_status(account: &Account) -> Result<(), String> 
@@ -67,8 +77,6 @@ fn do_one_time(account: &mut Account, amount: i64)  -> Result<(), String>
     let mut transaction = Transaction {
         amount: amount,
         recur_day: None,
-        // complete is pointless here
-        complete: true,
     };
 
     account.apply_transaction(&mut transaction);
