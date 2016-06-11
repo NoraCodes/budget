@@ -57,10 +57,9 @@ pub fn args_to_command(args: (Option<&str>, Option<&str>, Option<&str>)) ->
         }
 
         // Make sure the command is valid; if not, return an error.
-        match is_command_valid(&arg0) {
-            true => (),
-            false => return Err(String::from("Invalid command ") + &arg0)
-        };
+        if !is_command_valid(&arg0) {
+            return Err(String::from("Invalid command ") + &arg0);
+        }
 
         // Match arg1 against all the commands that take no arguments
         // If it matches none of these, we can proceed to the next argument

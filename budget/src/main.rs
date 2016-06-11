@@ -78,8 +78,8 @@ fn fake_main() -> i32
     // options, which is done in exec.rs
     let cmd_result = match command {
         Command::Setup(amount, day) => do_setup(&config_file_path,
-                                                &amount,
-                                                &day),
+                                                amount,
+                                                day),
         _ => do_other(&config_file_path, command),
     };
 

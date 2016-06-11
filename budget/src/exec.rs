@@ -3,14 +3,14 @@ use commands::*;
 use data::*;
 
 /// Sets up the initial config file with an initial transaction
-pub fn do_setup(config_file_path: &str, payday_amount: &i64, payday_day: &u8) 
+pub fn do_setup(config_file_path: &str, payday_amount: i64, payday_day: u8) 
     -> Result<(), String>
 {
     // We're setting up a new config file
     // First, create the payday transaction
     let payday = Transaction {
-        amount: payday_amount.clone(),
-        recur_day: Some(payday_day.clone()),
+        amount: payday_amount,
+        recur_day: Some(payday_day),
         complete: false,
     };
     // Create the new account
@@ -72,7 +72,6 @@ fn do_one_time(account: &mut Account, amount: i64)  -> Result<(), String>
     };
 
     account.apply_transaction(&mut transaction);
-    println!("{:?}", &account);
     return Ok(());
 }
 
