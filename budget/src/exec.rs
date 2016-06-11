@@ -43,15 +43,36 @@ pub fn do_other(config_file_path: &str, command: Command)
     // Once we have the guarantee of the command (which this function requires to be called) and of
     // the data from the config file, we can simply dispatch to the other do_ functions, since
     // their return type matches that of this function
+    // TODO: Move to a system wherein all these subserviant do_- commands return an Account which
+    // we Update() and then write to a file. This will potentially allow us to add do_setup to the set of
+    // subserviant do_ functions and allow main to depend only on this, which we can then rename
+    // simply exec()
     match command {
         Command::Status => return do_status(&account),
+        Command::OneTime(amount) => return do_one_time(&mut account, 
+                                                       amount),
         _ => return Err(String::from("Not implemented: ") 
                         + &format!("{:?}", command)),
     };
 }
 
-fn do_status(account: &Account) -> Result<(), String> {
+fn do_status(account: &Account) -> Result<(), String> 
+{
     println!("{:?}", account);
+    return Ok(());
+}
+
+fn do_one_time(account: &mut Account, amount: i64)  -> Result<(), String>
+{
+    let mut transaction = Transaction {
+        amount: amount,
+        recur_day: None,
+        // complete is pointless here
+        complete: true,
+    };
+
+    account.apply_transaction(&mut transaction);
+    println!("{:?}", &account);
     return Ok(());
 }
 

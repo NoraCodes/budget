@@ -16,7 +16,7 @@ pub struct Account {
 }
 
 impl Account {
-    fn apply_transaction(&mut self, trans: &mut Transaction) {
+    pub fn apply_transaction(&mut self, trans: &mut Transaction) {
         // Apply the transaction to us
         self.balance += trans.amount;
         // And let the transaction know it's been applied
